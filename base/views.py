@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from .models import Room, Topic, Message
-from .forms import RoomForm
+from .forms import RoomForm, UserForm
 
 # Create your views here.
 
@@ -86,10 +86,10 @@ def home(request):
 
 # ROOM PAGE
 def room(request, pk):
-    room = Room.objects.get(id=pk)  # This line retrieves the room with the id that matches the pk parameter.
+    room = Room.objects.get(id=pk)
     room_messages = room.message_set.all()
     participants = room.participants.all()
-    
+
     if request.method == 'POST':
         message = Message.objects.create(
             user=request.user,
@@ -98,12 +98,10 @@ def room(request, pk):
         )
         room.participants.add(request.user)
         return redirect('room', pk=room.id)
-    
-    context = {'room':room, 'room_messages':room_messages, 
-               'participants':participants}
 
+    context = {'room': room, 'room_messages': room_messages,
+               'participants': participants}
     return render(request, 'base/room.html', context)
-
 # USER PAGE
 
 def userProfile(request, pk):
@@ -184,5 +182,13 @@ def deleteMessage(request, pk):
 
 @login_required(login_url='login')
 def updateUser(request):
- 
-    return render(request, 'base/update-user.html')
+    user = request.user
+    form = UserForm(instance=user)
+    
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.id)
+
+    return render(request, 'base/update-user.html', {'form':form})
