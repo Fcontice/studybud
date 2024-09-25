@@ -199,6 +199,5 @@ def topicsPage(request):
     return render(request, 'base/topics.html', {'topics':topics})
 
 def activityPage(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
-    room_messages = Message.objects.filter(body__icontains=q)
+    room_messages = Message.objects.all()
     return render(request, 'base/activity.html', {'room_messages':room_messages})
