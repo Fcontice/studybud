@@ -22,12 +22,12 @@
         </div>
       </div>
       <div class="layout__body">
-        <form class="form" method="POST" action="#">
+        <form class="form" method="POST" action="">
           {% csrf_token %} 
 
           <div class="form__group">
             <label for="room_topic">Enter a Topic</label>
-            <input required type="text" name="{{room.topic.name}}"  list="topic-list" >
+            <input required type="text" value="{{room.topic.name}}" name="topic"  list="topic-list" >
             <datalist id="topic-list">
               <select id="room_topic">
                 {% for topic in topics %}
@@ -58,14 +58,7 @@
               </datalist>
             </div> -->
 
-          <!-- <div class="form__group">
-            <label for="room_about">About</label>
-            <textarea
-              name="room_about"
-              id="room_about"
-              placeholder="Write about your study group..."
-            ></textarea>
-          </div> -->
+          </div> 
           <div class="form__action">
             <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
             <button class="btn btn--main" type="submit">Submit</button>
